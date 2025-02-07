@@ -5,7 +5,6 @@ import com.example.jwt.domain.member.member.service.AuthTokenService;
 import com.example.jwt.domain.member.member.service.MemberService;
 import com.example.jwt.standard.util.Ut;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.DisplayName;
@@ -55,13 +54,7 @@ public class AuthTokenServiceTest {
         String jwtStr = Ut.Jwt.createToken(secretKey, expireSeconds, originPayload);
         assertThat(jwtStr).isNotBlank();
 
-        Jwt<?, ?> parsedJwt = Jwts
-                .parser()
-                .verifyWith(secretKey)
-                .build()
-                .parse(jwtStr);
-
-        Map<String, Object> parsedPayload = (Map<String, Object>) parsedJwt.getPayload();
+        Map<String, Object> parsedPayload = Ut.Jwt.getPayload(secretKey, jwtStr);
         assertThat(parsedPayload).containsAllEntriesOf(originPayload);
     }
 
