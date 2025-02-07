@@ -26,14 +26,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthTokenServiceTest {
 
     @Autowired
-    private AuthTokenService authTokenServiceService;
+    private AuthTokenService authTokenService;
     @Autowired
     private MemberService memberService;
+
+    // 토큰 시크릿 키 -> 도장 찍는 롤
+    SecretKey secretKey = Keys.hmacShaKeyFor("abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890".getBytes());
 
     @Test
     @DisplayName("AuthTokenService 생성")
     void init() {
-        assertThat(authTokenServiceService).isNotNull();
+        assertThat(authTokenService).isNotNull();
     }
 
     @Test
@@ -41,9 +44,6 @@ public class AuthTokenServiceTest {
     void createToken() {
         // 토큰 만료기간 : 1년
         int expireSeconds = 60 * 60 * 24 * 365;
-
-        // 토큰 시크릿 키 -> 도장 찍는 롤
-        SecretKey secretKey = Keys.hmacShaKeyFor("abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890".getBytes());
 
         // 정보
         Claims claims = Jwts.claims()
@@ -71,10 +71,19 @@ public class AuthTokenServiceTest {
 
         // jwt -> access token jwt
         Member member = memberService.findByUsername("user1").get();
-        String accessToken = authTokenServiceService.genAccessToken(member);
+        String accessToken = authTokenService.genAccessToken(member);
 
         assertThat(accessToken).isNotBlank();
         System.out.println("accessToken = " + accessToken);
+    }
+
+    @Test
+    @DisplayName("jwt valid check")
+    void checkValid() {
+        Member member = memberService.findByUsername("user1").get();
+        String accessToken = authTokenService.genAccessToken(member);
+        boolean isValid = Ut.Jwt.isValidToken(secretKey, accessToken);
+        assertThat(isValid).isTrue();
     }
 
 }
