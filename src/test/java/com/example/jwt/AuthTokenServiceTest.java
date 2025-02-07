@@ -1,9 +1,9 @@
 package com.example.jwt;
 
 import com.example.jwt.domain.member.member.service.AuthTokenService;
+import com.example.jwt.standard.Ut;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
-import java.util.Date;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -39,23 +39,16 @@ public class AuthTokenServiceTest {
 
         // 토큰 시크릿 키 -> 도장 찍는 롤
         Key secretKey = Keys.hmacShaKeyFor("abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890".getBytes());
-        
+
         // 정보
         Claims claims = Jwts.claims()
                 .add("name", "Paul")
                 .add("age", 23)
                 .build();
-        Date issuedAt = new Date();
-        Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
 
-        String jwt = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(issuedAt)
-                .setExpiration(expiration)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
-
+        String jwt = Ut.Jwt.createToken(secretKey, expireSeconds, Map.of("name", "john", "age", 23));
         assertThat(jwt).isNotBlank();
+
         System.out.println("jwt = " + jwt);
     }
 

@@ -2,6 +2,12 @@ package com.example.jwt.standard;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.Map;
 
 public class Ut {
     public static class Json {
@@ -12,6 +18,22 @@ public class Ut {
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public static class Jwt {
+        public static String createToken(Key secretKey, int expireSeconds, Map<String, Object> claims){
+
+            Date issuedAt = new Date();
+            Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
+
+            String jwt = Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(issuedAt)
+                    .setExpiration(expiration)
+                    .signWith(secretKey, SignatureAlgorithm.HS256)
+                    .compact();
+            return jwt;
         }
     }
 }
