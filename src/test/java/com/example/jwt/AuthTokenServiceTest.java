@@ -3,7 +3,7 @@ package com.example.jwt;
 import com.example.jwt.domain.member.member.entity.Member;
 import com.example.jwt.domain.member.member.service.AuthTokenService;
 import com.example.jwt.domain.member.member.service.MemberService;
-import com.example.jwt.standard.Ut;
+import com.example.jwt.standard.util.Ut;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.crypto.SecretKey;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -51,16 +51,18 @@ public class AuthTokenServiceTest {
                 .add("age", 23)
                 .build();
 
-        String jwtStr = Ut.Jwt.createToken(secretKey, expireSeconds, Map.of("name", "john", "age", 23));
+        Map<String, Object> originPayload = Map.of("name", "john", "age", 23);
+        String jwtStr = Ut.Jwt.createToken(secretKey, expireSeconds, originPayload);
         assertThat(jwtStr).isNotBlank();
 
-        Jwt<?, ?> parseJwt = Jwts
+        Jwt<?, ?> parsedJwt = Jwts
                 .parser()
                 .verifyWith(secretKey)
                 .build()
                 .parse(jwtStr);
 
-        System.out.println("jwt = " + jwtStr);
+        Map<String, Object> parsedPayload = (Map<String, Object>) parsedJwt.getPayload();
+        assertThat(parsedPayload).containsAllEntriesOf(originPayload);
     }
 
     @Test

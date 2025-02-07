@@ -1,7 +1,7 @@
 package com.example.jwt.global.security;
 
 import com.example.jwt.global.dto.RsData;
-import com.example.jwt.standard.Ut;
+import com.example.jwt.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

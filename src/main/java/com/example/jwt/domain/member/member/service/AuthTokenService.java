@@ -1,7 +1,7 @@
 package com.example.jwt.domain.member.member.service;
 
 import com.example.jwt.domain.member.member.entity.Member;
-import com.example.jwt.standard.Ut;
+import com.example.jwt.standard.util.Ut;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
