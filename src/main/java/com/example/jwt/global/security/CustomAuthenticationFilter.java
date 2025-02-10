@@ -35,17 +35,21 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        String accessToken = authorizationHeader.substring("Bearer".length());
-        // apiKey 방식 인증
-        // Optional<Member> opMember = memberService.findByApiKey(apiKey);
 
-        // accessToken 방식 인증
+        String accessToken = authorizationHeader.substring("Bearer ".length());
+
+        // apiKey 방식 인증
+//        Optional<Member> opMember = memberService.findByApiKey(apiKey);
+
+        // accessToken 인증 방식
         Optional<Member> opMember = memberService.getMemberByAccessToken(accessToken);
+
 
         if(opMember.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }
+
         Member actor = opMember.get();
         rq.setLogin(actor.getUsername());
 
