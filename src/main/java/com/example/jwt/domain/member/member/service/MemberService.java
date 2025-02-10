@@ -14,6 +14,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final AuthTokenService authTokenService;
+
     public Member join(String username, String password, String nickname) {
 
         UUID uuid = UUID.randomUUID();
@@ -42,5 +44,9 @@ public class MemberService {
 
     public Optional<Member> findByApiKey(String apiKey) {
         return memberRepository.findByApiKey(apiKey);
+    }
+
+    public String getAuthToken(Member member) {
+        return authTokenService.genAccessToken(member);
     }
 }

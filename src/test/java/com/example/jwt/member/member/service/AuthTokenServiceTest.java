@@ -1,4 +1,4 @@
-package com.example.jwt;
+package com.example.jwt.member.member.service;
 
 import com.example.jwt.domain.member.member.entity.Member;
 import com.example.jwt.domain.member.member.service.AuthTokenService;
