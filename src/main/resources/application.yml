@@ -14,6 +14,8 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+    hikari:
+      auto-commit: false
 
   jpa:
     open-in-view: false # OSIV 스프링부트가 컨톨러에 한해서는 영속성 컨텍스트를 유지 -> 영속성 관리 주의
