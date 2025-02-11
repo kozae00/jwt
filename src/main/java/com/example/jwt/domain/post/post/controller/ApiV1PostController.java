@@ -1,7 +1,6 @@
 package com.example.jwt.domain.post.post.controller;
 
 import com.example.jwt.domain.member.member.entity.Member;
-import com.example.jwt.domain.member.member.service.MemberService;
 import com.example.jwt.domain.post.post.dto.PageDto;
 import com.example.jwt.domain.post.post.dto.PostWithContentDto;
 import com.example.jwt.domain.post.post.entity.Post;
@@ -24,7 +23,21 @@ public class ApiV1PostController {
 
     private final PostService postService;
     private final Rq rq;
-    private final MemberService memberService;
+
+    record StatisticsResBody(long posCount, long postPublishedCount, long postListedCount) {}
+
+    @GetMapping("/statistics")
+    public RsData<StatisticsResBody> getStatistics() {
+        return new RsData<>(
+                "200-1",
+                "통계 조회가 완료되었습니다.",
+                new StatisticsResBody(
+                        10,
+                        10,
+                        10
+                )
+        );
+    }
 
     @GetMapping
     @Transactional
