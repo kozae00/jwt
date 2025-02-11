@@ -311,6 +311,8 @@ public class ApiV1MemberControllerTest {
     void me3() throws Exception {
         String apiKey = loginedMember.getApiKey();
         String expiredToken = apiKey + " eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MywidXNlcm5hbWUiOiJ1c2VyMSIsImlhdCI6MTczOTI0MTgzMSwiZXhwIjoxNzcwNzc3ODMxfQ.XvlpCSRzG8_7XQGcgRtkMuyK5Ji_6dicwnVWqbPkE2udU-0ZxcAzcTBrbpVYCydkzURCIG-kNwDzfsu9eobOhw";
+        String wrongToken = apiKey + "" + "11";
+
         ResultActions resultActions = meRequest(expiredToken);
         resultActions
                 .andExpect(status().isOk())
@@ -318,6 +320,7 @@ public class ApiV1MemberControllerTest {
                 .andExpect(handler().methodName("me"))
                 .andExpect(jsonPath("$.code").value("200-1"))
                 .andExpect(jsonPath("$.msg").value("내 정보 조회가 완료되었습니다."));
+
         checkMember(resultActions, loginedMember);
     }
 

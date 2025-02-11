@@ -26,11 +26,11 @@ public class SecurityConfig {
                         authorizeHttpRequests
                                 .requestMatchers("/h2-console/**")
                                 .permitAll()
-                                .requestMatchers(HttpMethod.GET,"/api/*/posts/{id:\\d+}", "/api/*/posts", "/api/*/posts/{postId:\\d+}/comments")
+                                .requestMatchers(HttpMethod.GET, "/api/*/posts/{id:\\d+}", "/api/*/posts", "/api/*/posts/{postId:\\d+}/comments")
                                 .permitAll()
                                 .requestMatchers("/api/*/members/login", "/api/*/members/join")
                                 .permitAll()
-                                .requestMatchers("api/v1/posts/statistics")
+                                .requestMatchers("/api/v1/posts/statistics")
                                 .hasRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
@@ -64,6 +64,7 @@ public class SecurityConfig {
                                             );
                                         }
                                 )
+
                 );
         ;
         return http.build();
