@@ -278,7 +278,6 @@ public class ApiV1MemberControllerTest {
 
         String apiKey = loginedMember.getApiKey();
         String token = memberService.getAuthToken(loginedMember);
-
         ResultActions resultActions = meRequest(token);
 
         resultActions
@@ -305,6 +304,21 @@ public class ApiV1MemberControllerTest {
                 .andExpect(jsonPath("$.code").value("401-1"))
                 .andExpect(jsonPath("$.msg").value("잘못된 인증키입니다."));
 
+    }
+
+    @Test
+    @DisplayName("내 정보 조회 - 만료된 accessToken 사용")
+    void me3() throws Exception {
+        String apiKey = loginedMember.getApiKey();
+        String expiredToken = apiKey + " eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MywidXNlcm5hbWUiOiJ1c2VyMSIsImlhdCI6MTczOTI0MTgzMSwiZXhwIjoxNzcwNzc3ODMxfQ.XvlpCSRzG8_7XQGcgRtkMuyK5Ji_6dicwnVWqbPkE2udU-0ZxcAzcTBrbpVYCydkzURCIG-kNwDzfsu9eobOhw";
+        ResultActions resultActions = meRequest(expiredToken);
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(ApiV1MemberController.class))
+                .andExpect(handler().methodName("me"))
+                .andExpect(jsonPath("$.code").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("내 정보 조회가 완료되었습니다."));
+        checkMember(resultActions, loginedMember);
     }
 
 

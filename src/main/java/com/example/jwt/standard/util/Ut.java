@@ -44,7 +44,9 @@ public class Ut {
                         .verifyWith(secretKey)
                         .build()
                         .parse(token);
+
             } catch (Exception e) {
+                e.printStackTrace();
                 return false;
             }
             return true;
