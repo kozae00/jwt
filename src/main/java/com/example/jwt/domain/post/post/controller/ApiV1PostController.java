@@ -1,6 +1,7 @@
 package com.example.jwt.domain.post.post.controller;
 
 import com.example.jwt.domain.member.member.entity.Member;
+import com.example.jwt.domain.member.member.service.MemberService;
 import com.example.jwt.domain.post.post.dto.PageDto;
 import com.example.jwt.domain.post.post.dto.PostWithContentDto;
 import com.example.jwt.domain.post.post.entity.Post;
@@ -23,6 +24,7 @@ public class ApiV1PostController {
 
     private final PostService postService;
     private final Rq rq;
+    private final MemberService memberService;
 
     record StatisticsResBody(long postCount, long postPublishedCount, long postListedCount) { }
 
@@ -105,8 +107,9 @@ public class ApiV1PostController {
     public RsData<PostWithContentDto> write(@RequestBody @Valid WriteReqBody reqBody) {
 
         Member actor = rq.getActor();
+        Member realActor = rq.getRealActor(actor);
 
-        Post post = postService.write(actor, reqBody.title(), reqBody.content(), reqBody.published(), reqBody.listed());
+        Post post = postService.write(realActor, reqBody.title(), reqBody.content(), reqBody.published(), reqBody.listed());
 
         return new RsData<>(
                 "201-1",

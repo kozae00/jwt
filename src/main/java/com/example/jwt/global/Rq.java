@@ -84,4 +84,8 @@ public class Rq {
         accsessTokenCookie.setAttribute("SameSite", "Strict");
         response.addCookie(accsessTokenCookie);
     }
+
+    public Member getRealActor(Member actor) {
+        return memberService.findById(actor.getId()).get();
+    }
 }
