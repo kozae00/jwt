@@ -3,6 +3,7 @@ package com.example.jwt;
 import com.example.jwt.domain.member.member.controller.ApiV1MemberController;
 import com.example.jwt.domain.member.member.entity.Member;
 import com.example.jwt.domain.member.member.service.MemberService;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -187,7 +188,27 @@ public class ApiV1MemberControllerTest {
                 .andExpect(jsonPath("$.data.apiKey").value(member.getApiKey()))
                 .andExpect(jsonPath("$.data.accessToken").exists());
 
+        resultActions
+                .andExpect(mvcResult -> {
+                    Cookie apiKey = mvcResult.getResponse().getCookie("apiKey");
 
+                    assertThat(apiKey).isNotNull();
+                    assertThat(apiKey.getName()).isEqualTo("apiKey");
+                    assertThat(apiKey.getValue()).isNotBlank();
+                    assertThat(apiKey.getDomain()).isEqualTo("localhost");
+                    assertThat(apiKey.isHttpOnly()).isTrue();
+                    assertThat(apiKey.getSecure()).isTrue();
+
+                    Cookie accessToken = mvcResult.getResponse().getCookie("accessToken");
+
+                    assertThat(accessToken).isNotNull();
+                    assertThat(accessToken.getName()).isEqualTo("accessToken");
+                    assertThat(accessToken.getValue()).isNotBlank();
+                    assertThat(accessToken.getDomain()).isEqualTo("localhost");
+                    assertThat(accessToken.isHttpOnly()).isTrue();
+                    assertThat(accessToken.getSecure()).isTrue();
+
+                });
     }
 
     @Test
