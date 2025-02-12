@@ -20,8 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -345,5 +344,32 @@ public class ApiV1MemberControllerTest {
         checkMember(resultActions, loginedMember);
     }
 
+
+    @Test
+    @DisplayName("로그아웃")
+    void logout() throws Exception {
+        ResultActions resultActions = mvc.perform(
+                delete("/api/v1/members/logout")
+        );
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(handler().handlerType(ApiV1MemberController.class))
+                .andExpect(handler().methodName("logout"))
+                .andExpect(jsonPath("$.code").value("200-1"))
+                .andExpect(jsonPath("$.msg").value("로그아웃 되었습니다."));
+
+        resultActions.
+                andExpect(
+                        mvcResult -> {
+                            Cookie apiKey = mvcResult.getResponse().getCookie("apiKey");
+                            assertThat(apiKey).isNotNull();
+                            assertThat(apiKey.getMaxAge()).isZero();
+
+                            Cookie accessToken = mvcResult.getResponse().getCookie("accessToken");
+                            assertThat(accessToken).isNotNull();
+                            assertThat(accessToken.getMaxAge()).isZero();
+                        }
+                );
+    }
 
 }
